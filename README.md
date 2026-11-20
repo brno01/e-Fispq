@@ -57,4 +57,4 @@ O `claude` é o revisor sob demanda: comente `@claude` num PR ou numa issue, ou 
 O histórico do git contém chaves antigas (API do Google/Firebase e um segredo de autenticação de desenvolvimento), já removidas da árvore atual. Estão registradas em `.gitleaksignore` e devem ser consideradas expostas.
 
 ## Licença
-Todos os direitos reservados; veja `LICENSE`.
+[MIT](LICENSE)
