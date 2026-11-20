@@ -1,0 +1,10 @@
+# Old keys that were removed from the current tree but remain in the git history.
+# History was not rewritten. Treat the first three as exposed (revoke/rotate if still valid).
+# src/firebase.ts: Firebase/Google web API key (gcp-api-key)
+e1f3419b0dcf6c662fd838614b4e8e47107a49ae:src/firebase.ts:gcp-api-key:5
+# serviceAccountKey.json: Google API key field (gcp-api-key)
+e1f3419b0dcf6c662fd838614b4e8e47107a49ae:serviceAccountKey.json:gcp-api-key:2
+# .env.dev.yml: AUTH_SECRET value (probably the JWT signing secret of the dev environment)
+2620d237a5aeb34498d5ab582e2e25a308a4c468:.env.dev.yml:generic-api-key:7
+# README.md (first commit): the public placeholder token of the NestJS template CircleCI badge; not a real secret
+956f9a09d9c301c8ec513fff8527c9a8f8ee4c57:README.md:generic-api-key:5

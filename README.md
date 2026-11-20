@@ -1,73 +1,60 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# e-Fispq
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=REMOVIDO
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+[![ci](https://github.com/brno01/e-Fispq/actions/workflows/ci.yml/badge.svg)](https://github.com/brno01/e-Fispq/actions/workflows/ci.yml)
+[![security](https://github.com/brno01/e-Fispq/actions/workflows/security.yml/badge.svg)](https://github.com/brno01/e-Fispq/actions/workflows/security.yml)
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Back-end em NestJS (TypeScript) para a FISPQ eletrônica (Ficha de Informações de Segurança de Produtos Químicos). O nome e a descrição do projeto indicam esse objetivo, mas o código atual é só o esqueleto: conexão com PostgreSQL via TypeORM, documentação Swagger e uma entidade base. Ainda não há módulos de negócio nem rotas de FISPQ.
 
-## Description
+## Estado
+Projeto parado. Desenvolvido de 2023 a 2025 e sem manutenção desde então. As dependências estão desatualizadas (Nest 9, TypeScript 4.7) e têm vulnerabilidades conhecidas (`npm audit` aponta itens críticos e altos); por isso a verificação de segurança do GitHub roda em modo só relatório. Não o use em produção sem atualizar as dependências.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
+## Requisitos e instalação
+- Node.js 18 (versão em que o build e os testes foram conferidos).
+- PostgreSQL acessível, na porta 5432 (fixa no código).
 
 ```bash
-$ npm install
+npm ci
 ```
 
-## Running the app
+## Configuração
+As variáveis são lidas de um arquivo YAML na pasta de onde o processo é iniciado (`src/envs.ts`): `.env.yml` se `NODE_ENV=development`, senão `.env.local.yml`. Nenhum desses arquivos está no repositório. Variáveis usadas em `src/ormconfig.ts`:
 
+- `TYPEORM_HOST`, `TYPEORM_USERNAME`, `TYPEORM_PASSWORD`, `TYPEORM_DATABASE`: conexão com o banco.
+- `TYPEORM_SYNCHRONIZE`: `true` sincroniza o esquema com as entidades.
+- `TYPEORM_DROPSCHEMA`: `true` apaga o esquema ao iniciar. Cuidado.
+
+## Uso
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm run start      # inicia a API na porta 3000
+npm run :dev       # modo watch
+npm run build      # compila para dist/
+npm run :prod      # roda dist/main (depois do build)
 ```
+A documentação Swagger fica em `/api` (autenticação Bearer declarada). `AppController` (`GET /`, "Hello World!") existe em `src/`, mas não está registrado no `AppModule`, então não responde.
 
-## Test
-
+## Testes e CI
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm ci
+npm run build
+npm test           # 1 teste unitário (Jest)
 ```
+O `npm run lint` roda com `--fix` e hoje falha com 2 erros em `src/main.ts` (um `require` e um `;` faltando), por isso não está no CI. O teste e2e (`npm run test:e2e`) precisa de banco e espera uma rota que não está registrada; não foi executado.
 
-## Support
+No GitHub, todo PR e todo push na `main` rodam dois workflows:
+- `ci`: instala com `npm ci`, compila e roda os testes unitários.
+- `security`: segredos, dependências vulneráveis, análise estática, shellcheck e os próprios workflows. Neste repositório ele roda com `report-only`: lista os achados e abre uma issue `security-scan`, mas não reprova o job.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+O `claude` é o revisor sob demanda: comente `@claude` num PR ou numa issue, ou rode o workflow à mão para uma auditoria que abre issues. Só o dono do repositório consegue acioná-lo.
 
-## Stay in touch
+## Estrutura
+- `src/main.ts`: bootstrap (CORS, `ValidationPipe`, Swagger, porta 3000).
+- `src/app.module.ts`, `src/ormconfig.ts`, `src/envs.ts`: módulo raiz, conexão TypeORM (PostgreSQL) e leitura das variáveis.
+- `src/common/entity/base.entity.ts`: entidade base (`id` uuid, `createdAt`, `updatedAt`, `active`).
+- `src/app.controller.ts`, `src/app.service.ts`: exemplo do modelo do Nest.
+- `test/`: teste e2e.
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Segurança e cuidados
+O histórico do git contém chaves antigas (API do Google/Firebase e um segredo de autenticação de desenvolvimento), já removidas da árvore atual. Estão registradas em `.gitleaksignore` e devem ser consideradas expostas.
 
-## License
-
-Nest is [MIT licensed](LICENSE).
+## Licença
+Todos os direitos reservados; veja `LICENSE`.
